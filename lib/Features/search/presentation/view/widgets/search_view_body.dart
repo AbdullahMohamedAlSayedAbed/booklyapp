@@ -1,45 +1,40 @@
-import 'package:booklyapp/Features/home/data/models/book_model/book_model.dart';
-import 'package:booklyapp/Features/home/presentation/view/widgets/best_seller_list_view_item.dart';
 import 'package:booklyapp/Features/search/presentation/view/widgets/custom_search_text_field.dart';
+import 'package:booklyapp/Features/search/presentation/view/widgets/search_result_list_view.dart';
+import 'package:booklyapp/Features/search/presentation/view_models/search_cubit/search_book_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/widgets/custom_loading_indicator.dart';
+import 'search_result_list_view_bloc_builder.dart';
 
 class SearchViewBody extends StatelessWidget {
   const SearchViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
-          CustomSearchTextField(),
-          SizedBox(height: 15),
-          Expanded(child: SearchResultListView()),
+          CustomSearchTextField(
+            onSubmitted: (value) {
+              BlocProvider.of<SearchBookCubit>(context).fetchSearchBooks(
+                searchBook: value,
+              );
+            },
+            onChanged: (value) {
+              BlocProvider.of<SearchBookCubit>(context).fetchSearchBooks(
+                searchBook: value,
+              );
+            },
+          ),
+          const SizedBox(height: 15),
+          const Expanded(child: SearchResultListViewBlocBuilder()),
         ],
-      ),
-    );
-  }
-}
-
-class SearchResultListView extends StatelessWidget {
-  const SearchResultListView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: 100,
-      itemBuilder: (context, index) {
-        return const BestSellerListViewItem(
-          bookModel: BookModel(),
-          horizontal: 0,
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) => const SizedBox(
-        height: 20,
       ),
     );
   }
